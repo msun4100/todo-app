@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Dimensions, TouchableOpacity, View } from "react-native";
+import PropTypes from "prop-types";
 
 const COMPLETED_COLOR = "#bbb";
 const UNCOMPLETED_COLOR = "#373839";
@@ -29,7 +30,8 @@ const Circle = styled.View`
   border-radius: 12px;
   margin-right: 20px;
 `;
-const Text = styled.Text`
+
+const textStyle = css`
   width: ${width / 2}px;
   ${(props) =>
     props.isCompleted
@@ -41,39 +43,50 @@ const Text = styled.Text`
     color: ${UNCOMPLETED_COLOR};
   `}
 `;
+const Text = styled.Text`
+  ${textStyle}
+`;
 
 const TextInput = styled.TextInput`
-  width: ${width / 2}px;
-  ${(props) =>
-    props.isCompleted
-      ? `
-    color: ${COMPLETED_COLOR};
-    text-decoration-line: line-through;
-  `
-      : `
-    color: ${UNCOMPLETED_COLOR};
-  `}
+  ${textStyle}
 `;
 
 const ActionText = styled.Text`
   margin: 10px;
 `;
 
-const ToDo = ({ text = "" }) => {
+const ToDo = ({
+  text = "",
+  id,
+  deleteToDo,
+  updateToDo,
+  uncompleteToDo,
+  completeToDo,
+  isCompleted,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [toDoValue, setToDoValue] = useState(text || "");
+  const [isCompletedS, setIsCompleted] = useState(isCompleted);
+  const [toDoValue, setToDoValue] = useState(text);
 
-  const toggleComplete = () => {
+  const toggleComplete = (e) => {
+    e.stopPropagation();
+    if (isCompletedS) {
+      uncompleteToDo(id);
+    } else {
+      completeToDo(id);
+    }
     setIsCompleted((prev) => !prev);
   };
 
-  const startEditing = () => {
+  const startEditing = (e) => {
+    e.stopPropagation();
     setIsEditing(true);
   };
 
-  const finishEditing = () => {
+  const finishEditing = (e) => {
+    e.stopPropagation();
     setIsEditing(false);
+    updateToDo(id, toDoValue);
   };
 
   const onChangeInput = (text) => {
@@ -84,11 +97,11 @@ const ToDo = ({ text = "" }) => {
     <Container>
       <Column>
         <Touchable onPress={toggleComplete}>
-          <Circle isCompleted={isCompleted} />
+          <Circle isCompleted={isCompletedS} />
         </Touchable>
         {isEditing ? (
           <TextInput
-            isCompleted={isCompleted}
+            isCompleted={isCompletedS}
             value={toDoValue}
             onChangeText={onChangeInput}
             multiline={true}
@@ -97,7 +110,7 @@ const ToDo = ({ text = "" }) => {
             blurOnSubmit={true}
           />
         ) : (
-          <Text isCompleted={isCompleted}>{toDoValue}</Text>
+          <Text isCompleted={isCompletedS}>{toDoValue}</Text>
         )}
       </Column>
       <Column>
@@ -110,7 +123,12 @@ const ToDo = ({ text = "" }) => {
             <TouchableOpacity onPressOut={startEditing}>
               <ActionText>✏️</ActionText>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPressOut={(e) => {
+                e.stopPropagation();
+                return deleteToDo(id);
+              }}
+            >
               <ActionText>❌</ActionText>
             </TouchableOpacity>
           </>
@@ -118,6 +136,14 @@ const ToDo = ({ text = "" }) => {
       </Column>
     </Container>
   );
+};
+
+ToDo.propTypes = {
+  text: PropTypes.string.isRequired,
+  isCompleted: PropTypes.bool.isRequired,
+  updateToDo: PropTypes.func.isRequired,
+  deleteToDo: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default ToDo;

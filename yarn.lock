@@ -1572,7 +1572,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base64-js@^1.1.2, base64-js@^1.2.3:
+base64-js@^1.1.2, base64-js@^1.2.3, base64-js@^1.3.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.1.tgz#58ece8cb75dd07e71ed08c736abc5fac4dbf8df1"
   integrity sha512-mLQ4i2QO1ytvGWFWmcngKO//JXAQueZvwEKtjgQFM4jIK0kU+ytMfplL8j+n5mspOfjHwoAg+9yhb7BwAHm36g==
@@ -2372,6 +2372,13 @@ expo-permissions@~8.1.0:
   resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-8.1.0.tgz#a7f2ee91ba76ce3a467e7b10adaa9ca5201b226f"
   integrity sha512-QBHD+1J9+sGFnhoEGzMRchPweeEE0OJ9ehG/0l1BMRBA7qsLS9vRC1FTJ55NwjI0Kr4RTha9r6ZX1kZHT09f/w==
 
+expo-random@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/expo-random/-/expo-random-8.1.0.tgz#f59a3a0e05b09a95fefee7d4cc5e0aca9cd5c1b6"
+  integrity sha512-9n2gg83Hpg3ErkKu+a3FFOGmaPIxaHn6RuzjW24xFckdfmnrAKtbs1aU1aAcmoL1kXPvDeufRSEV/3lW93u6ug==
+  dependencies:
+    base64-js "^1.3.0"
+
 expo-sqlite@~8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/expo-sqlite/-/expo-sqlite-8.1.0.tgz#858eb28e1143db281de8a49c99b4a953a81d0834"
@@ -2493,6 +2500,11 @@ fancy-log@^1.3.2:
     color-support "^1.1.3"
     parse-node-version "^1.0.0"
     time-stamp "^1.0.0"
+
+fast-base64-decode@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fast-base64-decode/-/fast-base64-decode-1.0.0.tgz#b434a0dd7d92b12b43f26819300d2dafb83ee418"
+  integrity sha512-qwaScUgUGBYeDNRnbc/KyllVU88Jk1pRHPStuF/lO7B0/RTRLj7U0lkdTAutlBblY08rwZDff6tNU9cjv6j//Q==
 
 fb-watchman@^2.0.0:
   version "2.0.1"
@@ -4333,6 +4345,13 @@ react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-native-get-random-values@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-get-random-values/-/react-native-get-random-values-1.4.0.tgz#1234d4dde6b56b2fab0eaa7dc1719e2f8c32c336"
+  integrity sha512-NnmEZcC5zfz+QEytFPM/fw818Hodw/BNbv7jGxU4pla4K2K9DCzG83IReMJqQ2wo552AYKguqrBG2SSn/U6rbA==
+  dependencies:
+    fast-base64-decode "^1.0.0"
 
 react-native-view-shot@3.1.2:
   version "3.1.2"

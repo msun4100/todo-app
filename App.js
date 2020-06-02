@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { StatusBar, Dimensions, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StatusBar, Dimensions, Platform, AsyncStorage } from "react-native";
 import styled, { css } from "styled-components";
+import { AppLoading } from "expo";
+import { v1 as uuidv1 } from "uuid";
 
 import ToDo from "./ToDo";
 
@@ -51,10 +53,86 @@ const ScrollView = styled.ScrollView.attrs(() => ({
 }))``;
 
 export default function App() {
+  const [isLoadToDos, setIsLoadToDos] = useState(false);
+  const [toDos, setToDos] = useState({});
   const [newToDo, setNewToDo] = useState("");
   const onChange = async (text) => {
     setNewToDo(text);
   };
+
+  const addToDo = async () => {
+    if (newToDo !== "") {
+      const ID = uuidv1();
+      const obj = {
+        [ID]: {
+          id: ID,
+          isCompleted: false,
+          text: newToDo,
+          createdAt: Date.now(),
+        },
+      };
+      await setToDos((p) => Object.assign(p, obj));
+      setNewToDo("");
+      saveToDos(toDos);
+    }
+  };
+  const deleteToDo = async (id) => {
+    const prevToDos = toDos;
+    delete prevToDos[id];
+    await setToDos(Object.assign({}, prevToDos));
+    saveToDos(toDos);
+  };
+  const updateToDo = async (id, text) => {
+    await setToDos({
+      ...toDos,
+      [id]: {
+        ...toDos[id],
+        text: text,
+      },
+    });
+    saveToDos(toDos);
+  };
+
+  const uncompleteToDo = async (id) => {
+    await setToDos({
+      ...toDos,
+      [id]: {
+        ...toDos[id],
+        isCompleted: false,
+      },
+    });
+    saveToDos(toDos);
+  };
+
+  const completeToDo = async (id) => {
+    await setToDos((prev) => {
+      prev[id].isCompleted = true;
+      return prev;
+    });
+    saveToDos(toDos);
+  };
+
+  const saveToDos = (newToDos) => {
+    const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
+  };
+
+  const loadToDos = async () => {
+    try {
+      const items = await AsyncStorage.getItem("toDos");
+      setIsLoadToDos(true);
+      await setToDos(JSON.parse(items));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    loadToDos();
+  }, []);
+
+  if (!isLoadToDos) {
+    return <AppLoading />;
+  }
   return (
     <Container>
       <StatusBar barStyle="light-content" />
@@ -67,9 +145,22 @@ export default function App() {
           placeholderTextColor="#999"
           returnKeyType={"done"}
           autoCorrect={false}
+          onSubmitEditing={addToDo}
         />
         <ScrollView>
-          <ToDo text={"Hello I'm a To Do"} />
+          {Object.values(toDos)
+            // .reverse()
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .map((toDo) => (
+              <ToDo
+                key={toDo.id}
+                updateToDo={updateToDo}
+                deleteToDo={deleteToDo}
+                completeToDo={completeToDo}
+                uncompleteToDo={uncompleteToDo}
+                {...toDo}
+              />
+            ))}
         </ScrollView>
       </Card>
     </Container>
